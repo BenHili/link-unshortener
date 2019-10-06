@@ -1,31 +1,31 @@
-import axios from 'axios'
+import axios from "axios";
 
-const redirect_codes = [301, 303]
+const redirect_codes = [301, 303];
 
-const fetch = async (link: string, statusCode: number = 301, redirects: number = 0, path: string[] = []): Promise<string[]> => {
-  if (redirects > (process.env.MAX_REDIRECTS || 10)) {
-    throw badRequest('Exceeded maximum redirects for link')
-  }
-
+const fetch = async (
+  link: string,
+  statusCode: number = 301,
+  path: string[] = []
+): Promise<void> => {
   if (!redirect_codes.includes(statusCode) || !link) {
-    return path
+    console.log(path);
+    return;
   }
 
-  try {
-    const { headers, status } = await axios.get(link, {
+  await axios
+    .get(link, {
       maxRedirects: 0,
       validateStatus: (code: number): boolean => code < 400,
-      timeout: parseInt(process.env.FOLLOW_REDIRECT_TIMEOUT || '10000', 10)
+      timeout: 10000
     })
-    return fetch(headers.location, status, redirects++, [...path, ...(headers.location ? [headers.location] : [])])
-  } catch (err) {
-    if (err.code === 'ECONNABORTED') {
-      return path
-    } else {
-      throw err
-    }
-  }
-}
+    .then(({ headers, status }) => {
+      return fetch(headers.location, status, [
+        ...path,
+        ...(headers.location ? [headers.location] : [])
+      ]).catch(error => {
+        console.error(error);
+      });
+    });
+};
 
-export default fetch
-
+fetch(process.argv[2]);
