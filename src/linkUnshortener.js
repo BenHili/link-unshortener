@@ -47,7 +47,7 @@ var axios_1 = require("axios");
 var redirect_codes = [301, 303];
 var fetch = function (link, statusCode, path) {
     if (statusCode === void 0) { statusCode = 301; }
-    if (path === void 0) { path = []; }
+    if (path === void 0) { path = [link]; }
     return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -58,13 +58,24 @@ var fetch = function (link, statusCode, path) {
                     }
                     return [4 /*yield*/, axios_1["default"]
                             .get(link, {
-                            maxRedirects: 0,
+                            maxRedirects: 1,
                             validateStatus: function (code) { return code < 400; },
                             timeout: 10000
                         })
                             .then(function (_a) {
-                            var headers = _a.headers, status = _a.status;
-                            return fetch(headers.location, status, __spreadArrays(path, (headers.location ? [headers.location] : [])))["catch"](function (error) {
+                            var data = _a.data, headers = _a.headers, status = _a.status;
+                            var match;
+                            var urlParamRegex = /(url=)(.*?)(?:'|,|"|\n)/;
+                            var headerMatches = JSON.stringify(headers).match(urlParamRegex);
+                            var dataMatches = JSON.stringify(data).match(urlParamRegex);
+                            if (headerMatches && headerMatches.length > 2) {
+                                match = headerMatches[2];
+                            }
+                            else if (dataMatches && dataMatches.length > 2) {
+                                match = dataMatches[2];
+                            }
+                            var url = headers.location ? headers.location : match;
+                            return fetch(url, status, __spreadArrays(path, (url ? [url] : [])))["catch"](function (error) {
                                 console.error(error);
                             });
                         })];

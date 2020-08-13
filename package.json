@@ -1,0 +1,28 @@
+{
+  "name": "link-unshortener",
+  "version": "1.0.0",
+  "description": "Retrieve final url after a series of redirects",
+  "main": "linkUnshortener.js",
+  "dependencies": {
+    "@types/node": "^14.0.27",
+    "axios": "^0.19.2",
+    "node": "^14.8.0",
+    "tsc-node": "^0.0.3",
+    "typescript": "^3.9.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc src/linkUnshortener.ts",
+    "start": "yarn build && node src/linkUnshortener.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BenHili/link-unshortener.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BenHili/link-unshortener/issues"
+  },
+  "homepage": "https://github.com/BenHili/link-unshortener#readme"
+}
