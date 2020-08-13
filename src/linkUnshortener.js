@@ -53,8 +53,7 @@ var fetch = function (link, statusCode, path) {
             switch (_a.label) {
                 case 0:
                     if (!redirect_codes.includes(statusCode) || !link) {
-                        console.log(path);
-                        return [2 /*return*/];
+                        return [2 /*return*/, link];
                     }
                     return [4 /*yield*/, axios_1["default"]
                             .get(link, {

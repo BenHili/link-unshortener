@@ -6,10 +6,9 @@ const fetch = async (
   link: string,
   statusCode: number = 301,
   path: string[] = [link]
-): Promise<void> => {
+): Promise<string> => {
   if (!redirect_codes.includes(statusCode) || !link) {
-    console.log(path);
-    return;
+    return link;
   }
 
   await axios
